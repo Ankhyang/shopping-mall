@@ -4,8 +4,13 @@ import Router from 'vue-router'
 import DashBoard from '@/views/dashboard/DashBoard.vue'
 import state from '@/store/state'
 
-// 缓存组件加载
+// 懒加载二级组件 Tarbar
 const Home = () => import('@/views/home/Home.vue')
+const Category = () => import('@/views/category/Category')
+const Eat = () => import('@/views/eat/Eat')
+const Cart = () => import('@/views/cart/Cart')
+const Mine = () => import('@/views/mine/Mine')
+const GoodsDetail = () => import('@/views/common/GoodsDetail')
 
 // 登陆
 const Login = () => import('@/views/login/Login.vue')
@@ -45,12 +50,55 @@ const router = new Router({
           }
         },
         {
+          // 主页
           path: 'home',
           name: 'home',
           component: Home,
           meta: {
             keepAlive: true
           }
+        },
+        {
+          // 分类
+          path: 'category',
+          name: 'category',
+          component: Category,
+          meta: {
+            keepAlive: true
+          }
+        },
+        {
+          // 吃什么
+          path: 'eat',
+          name: 'eat',
+          component: Eat,
+          meta: {
+            keepAlive: true
+          }
+        },
+        {
+          // 购物车
+          path: 'cart',
+          name: 'cart',
+          component: Cart,
+          meta: {
+            keepAlive: true
+          }
+        },
+        {
+          // 我的
+          path: 'mine',
+          name: 'mine',
+          component: Mine,
+          meta: {
+            keepAlive: true
+          }
+        },
+        {
+          // 商品详情
+          path: 'goodsDetail',
+          name: 'goodsDetail',
+          component: GoodsDetail
         }
       ]
     },
@@ -77,5 +125,4 @@ router.beforeEach((to, from, next)=>{
     next()
   }
 })
-
 export default router

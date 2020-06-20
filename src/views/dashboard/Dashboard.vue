@@ -1,31 +1,50 @@
 <template>
-    <div id="dashboard">
-        <van-tabbar v-model="active"
-            :safe-area-inset-bottom=true
-            active-color="#75a342"
-        >
-            <van-tabbar-item v-for="(item, index) in tabbars" :key="index">
-                <span>{{item.title}}</span>
-                <template slot="icon" slot-scope="props">
-                    <img :src="props.active ? item.active : item.inactive" />
-                </template>
-            </van-tabbar-item>
-        </van-tabbar>
-
+    <div>
+        <div id="dashboard">
+            <van-tabbar v-model="active"
+                :safe-area-inset-bottom=true
+                active-color="#75a342"
+            >
+                <van-tabbar-item v-for="(item, index) in tabbars" 
+                                :key="index"
+                                @click="tab(index, item.name)"
+                >
+                    <span :class="curIndex === index ? 'active':''">{{item.title}}</span>
+                    <template slot="icon" slot-scope="props">
+                        <img :src="props.active ? item.active : item.inactive" />
+                    </template>
+                </van-tabbar-item>
+            </van-tabbar>
+        </div>                          
         <!-- 缓存界面选择加载 -->
-        <keep-alive>
-            <router-view v-if="$route.meta.keppAlive"></router-view>
-        </keep-alive>
-        <router-view v-if="!$route.meta.keppAlive"></router-view>
+        <div class="content">
+            <keep-alive>
+                <router-view v-if="$route.meta.keepAlive"></router-view>
+            </keep-alive>
+            <router-view v-if="!$route.meta.keepAlive"></router-view>
+        </div>
     </div>
 </template>
 
 <script>
 export default {
-    name: "dashBoard",
+    name: "DashBoard",
+    created() {
+        this.tabbarSelected(this.$route.name)
+    },
+    watch: {
+        // 监听路由变化，保证路由跳转tabbar选中正常
+        $route: {
+            handler (obj, oldObj) {
+                this.tabbarSelected(obj.name)
+            },
+            deep: true
+        }
+    },
     data() {
         return {
             active: 0,
+            curIndex: 0,
             tabbars: [
                 {
                     name: "home",
@@ -59,10 +78,42 @@ export default {
                 }
             ]
         }
+    },
+    methods: {
+        tab(index, name) {
+            this.curIndex = index
+            this.$router.push(name)
+        },
+        tabbarSelected (name) {
+            const obj = {
+                home: 0,
+                category: 1,
+                eat: 2,
+                cart: 3,
+                mine: 4
+            }
+            this.active = obj[name]
+        }
     }
 }
 </script>
 
-<style>
-
+<style lang="less" scoped>
+#dashboard{
+    margin-top: 3.125rem;
+}
+.content{
+    min-height: 100%;
+    padding-bottom: 2.8rem;
+}
+// 转场动画
+.router-slider-enter-active,
+.router-slider-leave-active {
+    transition: all .3s;
+}
+.router-slider-enter,
+.router-slider-leave{
+    transform: translate3d(2rem, 0, 0);
+    opacity: 0;
+}    
 </style>
